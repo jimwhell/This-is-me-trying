@@ -17,9 +17,10 @@
 //     return $router->app->version();
 // });
 
-$router->get('/', function () use ($router) {
-    return response()->json([
-        'message' => 'Welcome to the Lumen API',
-        'version' => $router->app->version(),
-    ]);
+$router->group(['prefix' => 'api'], function () use ($router) {
+    $router->get('notes', 'Notes\NotesController@index');
+    $router->get('notes/{id}', 'Notes\NotesController@show');
+    $router->post('notes', 'Notes\NotesController@store');
+    $router->put('notes/{id}', 'Notes\NotesController@update');
+    $router->delete('notes/{id}', 'Notes\NotesController@destroy');
 });
