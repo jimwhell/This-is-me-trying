@@ -13,6 +13,8 @@ class NotesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+// ------------------------------ GET ALL ----------------------------------------
   public function index()
 {
     $notes = Notes::all();
@@ -26,7 +28,7 @@ class NotesController extends Controller
    
 }
 
-
+// ------------------------------ POST----------------------------------------
     /**
      * Store a newly created resource in storage.
      *
@@ -35,9 +37,19 @@ class NotesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $notes = new Notes();
+        $notes->title = $request->title;
+        $notes->description = $request->description;
+        $notes->save();
+        return response()->json([   
+            'status' => 'success',
+            'status_code' => 201,
+            'data' => $notes
+        ], 201);
     }
 
+    
+    // ------------------------------ GET ALL BY ID ---------------------------------
     /**
      * Display the specified resource.
      *
@@ -55,6 +67,7 @@ class NotesController extends Controller
     ], 200);
     }
 
+    // ------------------------------ UPDATE ----------------------------------------
     /**
      * Update the specified resource in storage.
      *
@@ -64,9 +77,18 @@ class NotesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $notes = Notes::find($id);
+        $notes->title = $request->title;
+        $notes->description = $request->description;
+        $notes->save();
+        return response()->json([   
+            'status' => 'success',
+            'status_code' => 201,
+            'data' => $notes
+        ], 201);
     }
 
+    // ------------------------------ DELETE ----------------------------------------
     /**
      * Remove the specified resource from storage.
      *
@@ -75,6 +97,12 @@ class NotesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $notes = Notes::find($id);
+           $notes->delete();
+           return response()->json([   
+            'status' => 'success',
+            'status_code' => 201,
+            'data' => $notes
+        ], 201);
     }
 }
