@@ -14,15 +14,15 @@ export class NotesComponent implements OnInit {
   notes: Note[] = [];
 
   ngOnInit(): void {
-    this.notesService.getNotes().subscribe({
-      next: (response: any) => {
-        this.notes = response.data;
-        console.log(response);
-      },
-      error: (error) => {
-        console.error('Error fetching notes:', error);
-      },
-    });
+    // this.notesService.getNotes().subscribe({
+    //   next: (response: any) => {
+    //     this.notes = response.data;
+    //     console.log(response);
+    //   },
+    //   error: (error) => {
+    //     console.error('Error fetching notes:', error);
+    //   },
+    // });
   }
 
   getNotesbyId(id: number) {
