@@ -17,6 +17,9 @@ class NotesController extends Controller
 // ------------------------------ GET ALL ----------------------------------------
   public function index()
 {
+    // Use JWTAuth to authenticate the user
+    $user = JWTAuth::parseToken()->authenticate();
+  
     $notes = Notes::all();
 
     return response()->json([
@@ -37,9 +40,13 @@ class NotesController extends Controller
      */
     public function store(Request $request)
     {
+
+        $user = JWTAuth::parseToken()->authenticate();
+
         $notes = new Notes();
         $notes->title = $request->title;
         $notes->description = $request->description;
+        $notes->user_id = $user->id; // Assuming you want to associate the note with the authenticated user
         $notes->save();
         return response()->json([   
             'status' => 'success',
