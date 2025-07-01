@@ -4,9 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Notes extends Model
+class Like extends Model
 {
-     protected $fillable = ['title', 'description', 'user_id'];
+    protected $fillable = ['post_id', 'user_id'];
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
 
     public function user()
     {

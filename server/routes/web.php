@@ -13,25 +13,22 @@
 |
 */
 
-// $router->get('/', function () use ($router) {
-//     return $router->app->version();
-// });
-
-$router->group(['prefix' => 'api', 'middleware' => 'auth:api'], function () use ($router) {
-    $router->get('notes', 'Notes\NotesController@index');
-    $router->get('notes/{id}', 'Notes\NotesController@show');
-    $router->post('notes', 'Notes\NotesController@store');
-    $router->put('notes/{id}', 'Notes\NotesController@update');
-    $router->delete('notes/{id}', 'Notes\NotesController@destroy');
-
-
-    // $router->post('auth/login', 'AuthController@login');
-    
+$router->get('/', function () use ($router) {
+    return $router->app->version();
 });
-
-$router->post('signup', 'AuthController@signUp');
+$router->post('register', 'AuthController@register');
 $router->post('login', 'AuthController@login');
 
-$router->options('{any:.*}', function () {
-    return response('', 200);
+$router->group(['prefix' => 'api', 'middleware' => 'auth:api'], function () use ($router) {
+   
+    $router->group(['prefix' => 'posts'], function () use ($router) {
+        $router->post('/', 'PostController@createPost');
+        $router->get('test', function () {
+        return 'Test route works';
+        });
+    });
 });
+
+
+
+
