@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('songs', function (Blueprint $table) {
             $table->id();
             $table->string('cover_url');
-            $table->string('title');
+            $table->string('title')->unique();
             $table->unsignedSmallInteger('yearReleased');
             $table->string('album');
-            $table->foreignId('artist_id')->constrained()->cascadeOnDelete();
             $table->foreignId('genre_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
