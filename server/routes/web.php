@@ -23,9 +23,7 @@ $router->group(['prefix' => 'api', 'middleware' => 'auth:api'], function () use 
    
     $router->group(['prefix' => 'posts'], function () use ($router) {
         $router->post('/', 'PostController@createPost');
-        $router->get('test', function () {
-        return 'Test route works';
-        });
+        $router->get('/', 'PostController@getAllPosts');
     });
 });
 
