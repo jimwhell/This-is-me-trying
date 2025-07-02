@@ -8,6 +8,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HomeComponent } from './pages/home/home.component';
 import { PostCardComponent } from './components/post-card/post-card.component';
 import { PostListComponent } from './components/post-list/post-list.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { CreatePostFormComponent } from './components/create-post-form/create-post-form.component';
+import { ModalComponent } from './components/modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +21,9 @@ import { PostListComponent } from './components/post-list/post-list.component';
     HomeComponent,
     PostCardComponent,
     PostListComponent,
+    NavbarComponent,
+    CreatePostFormComponent,
+    ModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -23,7 +31,13 @@ import { PostListComponent } from './components/post-list/post-list.component';
     HttpClientModule,
     ReactiveFormsModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

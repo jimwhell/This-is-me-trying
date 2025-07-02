@@ -1,0 +1,12 @@
+<div
+  *ngIf="posts$ | async as posts"
+  class="post-list-container flex flex-col items-center h-full pt-36 gap-28 overflow-y-auto"
+>
+  <div class="create-post-container flex justify-end">
+    <app-create-post-form></app-create-post-form>
+  </div>
+
+  <div class="post-card" *ngFor="let post of posts">
+    <app-post-card [post]="post"></app-post-card>
+  </div>
+</div>

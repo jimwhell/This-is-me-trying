@@ -1,0 +1,22 @@
+<div
+  class="create-post-form-container flex px-2 text-center items-center w-[650px] gap-3"
+>
+  <div class="profile-image">
+    <img
+      class="w-10 h-10 rounded-full"
+      src="/assets/photos/placeholder-image-person-.jpg"
+      alt="Rounded avatar"
+    />
+  </div>
+  <button
+    (click)="toggleModal()"
+    class="outline-none flex-1 text-left bg-[#252728] h-[60px] rounded-3xl px-5 font-light text-gray-300"
+  >
+    Share a song today.
+  </button>
+</div>
+
+<app-modal
+  (toggledEvent)="onToggleEvent()"
+  [isModalOpen]="isModalOpen"
+></app-modal>

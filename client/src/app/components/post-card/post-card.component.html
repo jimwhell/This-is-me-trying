@@ -1,1 +1,42 @@
-<p>post-card works!</p>
+<div
+  class="post-container flex flex-col border w-[650px] p-16 gap-6 text-white bg-[#252728] rounded-2xl"
+>
+  <div
+    class="profile-container flex gap-5 justify-start items-center font-light"
+  >
+    <div class="profile-image">
+      <img
+        class="w-10 h-10 rounded-full"
+        src="/assets/photos/placeholder-image-person-.jpg"
+        alt="Rounded avatar"
+      />
+    </div>
+    <div class="profile-name flex flex-col gap-1">
+      <p class="font-bold">{{ post.user.username }}</p>
+      <p class="text-xs">
+        {{ post.user.created_at | date : "MMM d, y, h:mm a" }}
+      </p>
+    </div>
+  </div>
+  <div class="content-container flex flex-col gap-7">
+    <div class="content">
+      <p class="font-light">{{ post.content }}</p>
+    </div>
+    <div class="image-container">
+      <img
+        class="w-100"
+        [src]="post.song.cover_url"
+        alt="{{ post.song.title }}"
+      />
+    </div>
+    <div class="title-container flex flex-col">
+      <h2 class="font-light text-xl">{{ post.song.title }}</h2>
+      <p class="font-light text-lg" *ngFor="let artist of post.song.artists">
+        {{ artist.name }}
+      </p>
+      <p class="font-light">
+        {{ post.song.album }} {{ post.song.yearReleased }}
+      </p>
+    </div>
+  </div>
+</div>

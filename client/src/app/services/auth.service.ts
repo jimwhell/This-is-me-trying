@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api-service';
 import { AccessTokenResponse } from '../interfaces/access-token-response';
 import { Credentials } from '../interfaces/credentials';
-import { tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +13,7 @@ export class AuthService {
   constructor(private apiService: ApiService) {}
 
   //login method
-  login(credentials: Credentials) {
+  login(credentials: Credentials): Observable<AccessTokenResponse> {
     return this.apiService
       .post<Credentials, AccessTokenResponse>(
         `${this.baseUrl}/login`,
@@ -27,13 +27,12 @@ export class AuthService {
   }
 
   //set token id and expiration in local storage
-  private setSession(authResult: AccessTokenResponse) {
+  private setSession(authResult: AccessTokenResponse): void {
     localStorage.setItem('access_token', authResult.access_token);
   }
 
   getAccessToken(): string | undefined {
     const accessToken = localStorage.getItem('access_token');
-    console.log('Access token: ', accessToken);
     if (accessToken === null) {
       console.error('Access token not found');
       return;
