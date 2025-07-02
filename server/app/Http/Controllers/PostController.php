@@ -8,34 +8,24 @@ use App\Models\Song;
 use App\Models\User;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
 {
 
     public function getAllPosts() {
-        $posts = Post::with(['comments.user'])->get(); //retrieve all posts
-        foreach ($posts as $post) {
+        try {
+            $posts = Post::with('user', 'song.artists', 'song.genre', 'comments', 'likes')->get();
 
-            $post->user = $user = User::find($post->user_id); //find associated user with posts
-       
-            $song = Song::find($post->id);   //find related song to post id
-            $song->artists = $song->artists; //attach artists associated with the song 
-            $post->song = $song;  //attach song to iterated post
             
-            $post->comments = $post->comments; //attach associated comments to post
-            //attach the names of users in their respective comments
-            foreach ($post->comments as $comment) {
-                $comment->user = User::find($comment->user_id); 
-            }
-
-            $post->likes = $post->likes; //attach associated likes to post
-            //attach users to their respective likes 
-            foreach ($post->likes as $like) {
-                $lke->user = User::find($comment->user_id);
-            }
+            return response()->json($posts, 200);
         }
+        catch(\Exception $e) {
+            Log::error('Error fetching posts: ' . $e->getMessage());
 
-        return response()->json($posts, 200);
+             return response()->json([
+            'error' => 'Failed to fetch posts', 'message' => $e->getMessage()], 500);
+        }
     }
 
     
@@ -44,7 +34,7 @@ class PostController extends Controller
             'content' => 'required|string',
             'yearReleased' => 'required|string',
             'album' => 'required|string',
-            'cover_file' => 'required|image',
+            'coverFile' => 'required|image',
             'title' => 'required|string',
             'artistName' => 'required|string',
             'genreId' => 'required|exists:genres,id',
@@ -55,17 +45,25 @@ class PostController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        if ($request->hasFile('cover_file')) {
-            $fileName = 'file' .time().'.'.$request->file('cover_file')->extension();
-            $request->file('cover_file')->move('uploads', $fileName);
+        try {
+
+            if ($request->hasFile('coverFile')) {
+            $fileName = 'file' .time().'.'.$request->file('coverFile')->extension();
+            $request->file('coverFile')->move('uploads', $fileName);
             $coverUrl = url('uploads/' . $fileName);
         }
 
-         $artist = Artist::create([
+        $song = Song::where('title', $request->title)->whereHas('artists', function ($query) use ($request) {
+            $query->where('name', $request->artistName);
+        })->with('artists')->first();
+        
+        if (!$song) {
+            $artist = Artist::firstOrCreate([
             'name' => $request->artistName
-        ]);
+            ]);
 
-         $song = Song::create([
+
+            $song = Song::firstOrCreate([
             'cover_url' => $coverUrl,
             'title' => $request->title,
             'yearReleased' => $request->yearReleased,
@@ -73,7 +71,13 @@ class PostController extends Controller
             'genre_id' => $request->genreId
         ]);
 
-        $song->artists()->attach($artist->id);
+            $song->artists()->attach($artist->id);
+
+        }
+        else
+        {
+            $artist = $song->artists;
+        }
 
         $post = Post::create([
             'content' => $request->content,
@@ -84,9 +88,18 @@ class PostController extends Controller
         return response()->json([
             'message' => 'Post created successfully',
             'post' => $post,
-            'song' => $song,
-            'artist' => $artist,
         ], 201);
+
+        }
+        catch(\Exception $e) {
+            Log::error('Error creating post: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Failed to create post',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+
+       
     }
 
 
